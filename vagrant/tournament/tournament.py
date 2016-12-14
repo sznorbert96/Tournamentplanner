@@ -12,30 +12,41 @@ def connect():
 
 
 def deleteMatches():
-
-    """DELETE FROM Matches;"""
+	conn = connect()
+	c = conn.cursor()
+	c.execute("DELETE FROM Matches;")
+	conn.commit()
+	conn.close()
+    
 
 
 def deletePlayers():
-    """DELETE FROM Players;"""
-
+	conn = connect()
+	c = conn.cursor()
+	c.execute("DELETE FROM Players;")
+	conn.commit()
+	conn.close()
 
 def countPlayers():
-    """SELECT count(id) as num FROM Players;"""
-
+	conn = connect()
+	c = conn.cursor()
+	c.execute("SELECT count(id) as num FROM Players;")
+	conn.commit()
+	conn.close()
 
 def registerPlayer(name):
-    """Adds a player to the tournament database.
-
-    The database assigns a unique serial id number for the player.  (This
-    should be handled by your SQL database schema, not in your Python code.)
-
-    Args:
-      name: the player's full name (need not be unique).
-    """
-
+	conn = connect()
+	c = conn.cursor()
+	c.execute("INSERT INTO Players VALUES('" + str(name) + "');")
+	conn.commit()
+	conn.close()
 
 def playerStandings():
+	conn = connect()
+	c = conn.cursor()
+	c.execute("SELECT id, name, won, matches FROM Players;")
+	conn.commit()
+	conn.close()
     """Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
@@ -51,6 +62,11 @@ def playerStandings():
 
 
 def reportMatch(winner, loser):
+	conn = connect()
+	c = conn.cursor()
+	c.execute("INSERT INTO Matches VALUES(" + str(winner) + ", " + str(loser) + ", " + str(winner) + ", " + str(loser) + ");")
+	conn.commit()
+	conn.close()
     """Records the outcome of a single match between two players.
 
     Args:
@@ -74,3 +90,4 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+
