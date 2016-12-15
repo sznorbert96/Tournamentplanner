@@ -11,7 +11,7 @@ CREATE TABLE Players(
 	name text
 )
 ALTER TABLE Players ADD COLUMN id SERIAL PRIMARY KEY;
-ALTER TABLE Players ADD COLUMN wins(SELECT count(*) FROM Matches m, Players p WHERE p.id = m.winner group by p.id;)
+ALTER TABLE Players ADD COLUMN win(SELECT count(*) FROM Matches m, Players p WHERE p.id = m.winner group by p.id;)
 
 #show wins per players
 UPDATE Players

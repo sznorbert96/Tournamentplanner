@@ -12,15 +12,17 @@ def connect():
 
 
 def deleteMatches():
+    '''It delete all the registered matches from Matches table'''
 	conn = connect()
 	c = conn.cursor()
 	c.execute("DELETE FROM Matches;")
 	conn.commit()
 	conn.close()
-    
+
 
 
 def deletePlayers():
+    '''This procedure deletes all the registered players from the Players table (takes no input).'''
 	conn = connect()
 	c = conn.cursor()
 	c.execute("DELETE FROM Players;")
@@ -28,6 +30,7 @@ def deletePlayers():
 	conn.close()
 
 def countPlayers():
+    '''Returns a single number, which gives the number of the registered players in the tournament'''
 	conn = connect()
 	c = conn.cursor()
 	c.execute("SELECT count(id) as num FROM Players;")
@@ -35,6 +38,7 @@ def countPlayers():
 	conn.close()
 
 def registerPlayer(name):
+    '''Register players, it takes one input: the player name'''
 	conn = connect()
 	c = conn.cursor()
 	c.execute("INSERT INTO Players VALUES('" + str(name) + "');")
@@ -42,38 +46,34 @@ def registerPlayer(name):
 	conn.close()
 
 def playerStandings():
-	conn = connect()
+    '''Returns a list of the players and their win records, sorted by wins.'''
+    #This first sql query update the "wins" column. It check how many wins the players have.
+    conn = connect()
+    c = conn.cursor()
+    c.execute("UPDATE Players SET wins = subquery.count FROM (SELECT p.name, p.id, count(*) FROM Matches m, Players p WHERE p.id = m.winner group by p.id) AS subquery WHERE Players.id=subquery.id;")
+    conn.commit()
+    conn.close()
+    #This second sql query update the "matces" column. It count up how many matches Have the players played.
+    conn = connect()
+    c = conn.cursor()
+    c.execute("UPDATE Players SET matches = subquery.count FROM (SELECT p.name, p.id, count(*) FROM Matches m, Players p WHERE p.id = m.player1 or p.id = m.player2 group by p.id) AS subquery WHERE Players.id=subquery.id;")
+    conn.commit()
+    conn.close()
+    #This third sql query shows us the the current player standings.
+    conn = connect()
 	c = conn.cursor()
-	c.execute("SELECT id, name, won, matches FROM Players;")
+	c.execute("SELECT id, name, wins, matches FROM Players order by won desc;")
 	conn.commit()
 	conn.close()
-    """Returns a list of the players and their win records, sorted by wins.
-
-    The first entry in the list should be the player in first place, or a player
-    tied for first place if there is currently a tie.
-
-    Returns:
-      A list of tuples, each of which contains (id, name, wins, matches):
-        id: the player's unique id (assigned by the database)
-        name: the player's full name (as registered)
-        wins: the number of matches the player has won
-        matches: the number of matches the player has played
-    """
 
 
 def reportMatch(winner, loser):
+    '''winner and loser can't be string, these must be integers!'''
 	conn = connect()
 	c = conn.cursor()
 	c.execute("INSERT INTO Matches VALUES(" + str(winner) + ", " + str(loser) + ", " + str(winner) + ", " + str(loser) + ");")
 	conn.commit()
 	conn.close()
-    """Records the outcome of a single match between two players.
-
-    Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost
-    """
-
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -90,4 +90,3 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
