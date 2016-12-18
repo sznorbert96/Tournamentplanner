@@ -76,6 +76,22 @@ def reportMatch(winner, loser):
 	conn.close()
 
 def swissPairings():
+	'''The number of Players have to be even number.'''
+	conn = connect()
+	c = conn.cursor()
+	c.execute("SELECT * FROM Players;")
+	result = c.fetchall()
+	#pairs is a matrix
+	pairs = []
+	#pair is a row vector	
+	pair = []
+	for player1 in result:
+		for player2 in result:
+			if player1[1] not in pairs and player2[1] not in pairs player1[1] != player2[1] and player1[2] == player2[2]:
+				pair = [[player1[1],player1[0]],[player2[1],player2[0]]
+				pairs.append(pair)
+				break
+	return pairs
     """Returns a list of pairs of players for the next round of a match.
 
     Assuming that there are an even number of players registered, each player
