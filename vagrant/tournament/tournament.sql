@@ -1,27 +1,11 @@
--- Table definitions for the tournament project.
---
--- Put your SQL 'create table' statements in this file; also 'create view'
--- statements if you choose to use it.
---
--- You can write comments in this file by starting them with two dashes, like
--- these lines here.
 CREATE DATABASE tournament;
 \c tournament;
 CREATE TABLE Players(	
 	name text
-)
+);
 ALTER TABLE Players ADD COLUMN id SERIAL PRIMARY KEY;
-ALTER TABLE Players ADD COLUMN wins(SELECT count(*) FROM Matches m, Players p WHERE p.id = m.winner group by p.id;)
-
-#show wins per players
-UPDATE Players
-SET won = subquery.count
-FROM (SELECT p.name, p.id, count(*) FROM Matches m, Players p WHERE p.id = m.winner group by p.id) AS subquery WHERE Players.id=subquery.id;
-
-
-
-
-
+ALTER TABLE Players ADD COLUMN wins integer;
+ALTER TABLE Players ADD COLUMN matches integer;
 CREATE TABLE Matches(
 	player1 integer references Players(id),
 	player2 integer references Players(id),
@@ -29,4 +13,5 @@ CREATE TABLE Matches(
 	loser	integer references Players(id)
 );
 ALTER TABLE Matches ADD COLUMN matchid SERIAL PRIMARY KEY;
-\i tournament.sql
+
+--Database created.
