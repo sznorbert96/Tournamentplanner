@@ -23,3 +23,9 @@ You can reset your database with these procedures:
 deleteMatches() ==> it deletes all the matches from the Matches table.
 
 deletePlayers() ==> it deletes all the Players from the Players table.
+
+## Set up your database, and run the tournament_test.py
+1. Open a terminal, navigate to the location of the files. (Where you can find the tournament.sql, and the tournament_test.py files)
+2. Set up the database with this command: psql -f tournament.sql
+3. Run the tests with this command: python tournament_test.py
+4. If everything went correctly, you have to see this "Success ! All tests pass!".
